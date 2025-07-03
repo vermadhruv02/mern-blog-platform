@@ -29,7 +29,7 @@ const registerUser = asyncHandler(async (req, res) => {
   
   const userExisted = await User.findOne({ $or: [{ username }, { email }] });
   if (userExisted) {
-    throw new ApiError(409, "email or password already registered.");
+    throw new ApiError(409, "email or username already registered.");
   }
 
   // const avatarLocalFilePath = req.files?.avatar[0]?.path;

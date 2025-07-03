@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate} from 'react-router-dom'
 
 
 import {
@@ -16,9 +16,10 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import axios from 'axios'
+// import axios, { AxiosError } from 'axios'
+import { showToast } from '@/helper/ShowToast'
 
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 
 
 const formSchema = z
@@ -50,29 +51,101 @@ function RegisterForm() {
     },
   })
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    try {
+const navigate = useNavigate();
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  fetch('/api/v1/user/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include', // if you're using cookies
+    body: JSON.stringify({
+      fullName: data.fullName,
+      email: data.email,
+      username: data.username,
+      password: data.password,
+    }),
+  })
+    .then(async (res) => {
+      const responseData = await res.json();
+      // console.log('Response:', responseData);
 
-      const res = await axios.post('/api/v1/user/register', {
-        fullName: data.fullName,
-        email: data.email,
-        username: data.username,
-        // phone: data.phone,
-        password: data.password,
-      })
       if (res.status === 201) {
-        console.log('Registration successful:', res.data, res)
-        // Handle success (e.g., redirect to login or show a success message)
+        showToast('Registration successful', 'success');
+        navigate('/'); 
+        
+        console.log('Registration successful:', responseData);
       } else {
-        console.error('Registration failed:', res.data)
-        // Handle failure (e.g., show an error message)
+        console.error('Registration failed:', responseData);
+        showToast(responseData.message || 'Registration failed', 'error');
       }
-    } catch (error) {
-      console.error('Registration error:', error)
-      // Handle error (e.g., show a notification)
-    }
-    console.log('Form Data:', data)
-  }
+    })
+    .catch((error) => {
+      console.error('Registration error:', error);
+      showToast('Registration error', 'error');
+    });
+};
+
+//   const onSubmit = (data: z.infer<typeof formSchema>) => {
+//   axios.post('/api/v1/user/register', {
+//     fullName: data.fullName,
+//     email: data.email,
+//     username: data.username,
+//     password: data.password,
+//   })
+//   .then((res) => {
+//     console.log('Response:', res);
+//     if (res.status === 201) {
+//       showToast('Registration successful', 'success');
+//       console.log('Registration successful:', res.data, res);
+//     } else {
+//       console.error('Registration failed:', res.data);
+//       showToast('Registration failed', 'error');
+//     }
+//   })
+//   .catch((err) => {
+//     console.log(err.response);
+//     const error = err as AxiosError<{ message: string }>;
+//     const errorMessage =
+//       error.response?.data?.message ||
+//       error.message ||
+//       "Registration error";
+
+//     console.error("Registration error:", errorMessage);
+//     showToast(errorMessage, "error");
+//   });
+// };
+
+//   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+//     try {
+
+//       const res = await axios.post('/api/v1/user/register', {
+//         fullName: data.fullName,
+//         email: data.email,
+//         username: data.username,
+//         password: data.password,
+//       })
+//       console.log('Response:', res)
+//       if (res.status === 201) {
+//         showToast('Registration successful', 'success');
+//         console.log('Registration successful:', res.data, res)
+        
+//       } else {
+//         console.error('Registration failed:', res.data)
+//         showToast('Registration failed', 'error');
+//         // Handle failure (e.g., show an error message)
+//       }
+//     }  catch (err) {
+//       console.log(err.response)
+//   const error = err as AxiosError<{ message: string }>;
+//   const errorMessage = error.response?.data?.message || "Registration error";
+  
+//   console.error("Registration error:", errorMessage);
+//   showToast(errorMessage, "error");
+// }
+
+//     // console.log('Form Data:', data)
+//   }
 
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-900 px-4 transition-colors">

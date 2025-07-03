@@ -37,8 +37,12 @@ export interface IPost extends Document {
 const PostSchema: Schema = new Schema({
   title: { type: String, required: true },
   slug: { type: String, required: true, unique: true }, 
+  cover_image_url: { type: String, default: '' },
+  authorId: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
+  status: { type: String, enum: ['draft', 'published', 'archived'], default: 'draft' },
+  isDeleted: { type: Boolean, default: false },
+  tags: { type: [String], default: [] },
   content: { type: String, required: true },
-  author: { type: String, required: true },
 },{
     timestamps: true
 });
