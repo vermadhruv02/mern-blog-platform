@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
+import GoogleSignin from '@/components/GoogleSignin'
 
 axios.defaults.withCredentials = true;
 
@@ -26,9 +27,9 @@ const Login = () => {
     },
   });
 
-  const onSubmit = (data: { email: string; password: string }) => {
+  const onSubmit = async (data: { email: string; password: string }) => {
     try {
-      const response = axios.post('/api/v1/user/login', {
+      const response = await axios.post('/api/v1/user/login', {
         email: data.email,
         password: data.password,
       });
@@ -41,6 +42,14 @@ const Login = () => {
   return (
     <div className="bg-white dark:bg-zinc-900 shadow-md p-6 rounded-2xl w-full max-w-md transition-colors">
       <h2 className="text-2xl font-bold mb-4 text-center text-zinc-900 dark:text-zinc-100">Login</h2>
+      <div className=''>
+        <GoogleSignin/>
+        <div className='border my-5  flex justify-center items-center'>
+          <span className='absolute bg-white p-1'>
+            OR
+          </span>
+        </div>
+      </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Input
           placeholder="Email"

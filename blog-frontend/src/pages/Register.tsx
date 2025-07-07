@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 // import axios, { AxiosError } from 'axios'
 import { showToast } from '@/helper/ShowToast'
+import GoogleSignin from '@/components/GoogleSignin'
 
 // axios.defaults.withCredentials = true;
 
@@ -52,8 +53,8 @@ function RegisterForm() {
   })
 
 const navigate = useNavigate();
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-  fetch('/api/v1/user/register', {
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  await fetch('/api/v1/user/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -151,6 +152,14 @@ const navigate = useNavigate();
     <div className="min-h-screen w-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-900 px-4 transition-colors">
       <div className="bg-white dark:bg-zinc-900 shadow-md p-6 rounded-2xl w-full max-w-xl transition-colors">
         <h2 className="text-2xl font-bold mb-4 text-center text-zinc-900 dark:text-zinc-100">Register</h2>
+        <div className=''>
+          <GoogleSignin/>
+          <div className='border my-5  flex justify-center items-center'>
+            <span className='absolute bg-white p-1'>
+              OR
+            </span>
+          </div>
+        </div>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">

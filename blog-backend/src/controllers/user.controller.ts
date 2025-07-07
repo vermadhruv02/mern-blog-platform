@@ -104,11 +104,46 @@ const loginUser = asyncHandler(async (req, res)=> {
   .json(new ApiResponse(200, {user: updateUser, accessToken,refreshToken}, "User is logged In"));
 });
 
+const GoogleLoginUser = asyncHandler(async (req, res)=> {
+  console.log("Google login user called!!!");
+  console.log(req.body)
+  const { fullName, username, email, avatar} = req.body;
+
+  if(!username && !email) throw new ApiError(400, "Username or Email is required");
+  
+  let user = await User.findOne({
+    $or: [{ username }, { email }]
+  });
+  
+  if(!user) {
+    const password = Math.round(Math.random())
+    user = await User.create({fullName, username, email,password}) 
+  }
+  // console.log( "user validated");
+  
+  const { accessToken, refreshToken } = await   generateAccessTokenAndRefreshToken(user._id as mongoose.Types.ObjectId);
+  // console.log(`token generated ${accessToken}`);
+  
+  const updateUser = await User.findById(user._id).select("-password -refreshToken");
+  // console.log(updateUser);
+
+  const options= {
+    httpOnly: true,
+    secure: true,
+  }
+
+  res
+  .status(200)
+  .cookie("accessToken", accessToken,options)
+  .cookie("refreshToken", refreshToken,options)
+  .json(new ApiResponse(200, {user: updateUser, accessToken,refreshToken}, "User is logged In"));
+});
+
 const logoutUser = asyncHandler(async (req,res)=>{
   console.log(`logout route reached`);
   
   await User.findByIdAndUpdate(
-    req.user._id as mongoose.Types.ObjectId,
+    req.user?._id as mongoose.Types.ObjectId,
     { $unset: { refreshToken: 1 } },
     { new: true }
   );
@@ -171,7 +206,8 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
 const changePassword = asyncHandler(async (req,res)=>{
   const { oldPassword, newPassword } = req.body;
 
-  const user = await User.findById( req.user._id);
+  // if (!req.user?._id) throw new ApiError(404, "user not found");
+  const user = await User.findById(req.user?._id );
   if(!user) throw new ApiError(404, "user not found");
 
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
@@ -186,9 +222,10 @@ const changePassword = asyncHandler(async (req,res)=>{
 });
 
 const getUser = asyncHandler(async (req,res)=>{
+  const requestedUser = req.user
   res
   .status(200)
-  .json(new ApiResponse(200,req.user ,"user object is sent"))
+.json(new ApiResponse(200, registerUser  ,"user object is sent"))
 })
 
 const updateUserDetails = asyncHandler(async (req,res)=>{
@@ -223,7 +260,7 @@ const updateAvatar = asyncHandler(async (req,res)=>{
   if(!avatar) throw new ApiError(400, "file was not uploaded to cloudinary");
 
   const user = await User.findByIdAndUpdate(
-    req.user._id,
+    req.user?._id,
     {
       $set: { avatar: avatar?.url }
     },
@@ -246,7 +283,7 @@ const updateCoverImage = asyncHandler(async (req,res)=>{
   if(!coverImage) throw new ApiError(400, "file was not uploaded to cloudinary");
 
   const user = await User.findByIdAndUpdate(
-    req.user._id,
+    req.user?._id,
     {
       $set: { coverImage: coverImage?.url }
     },
@@ -272,4 +309,5 @@ export {
   updateUserDetails,
   updateAvatar,
   updateCoverImage,
+  GoogleLoginUser
 };

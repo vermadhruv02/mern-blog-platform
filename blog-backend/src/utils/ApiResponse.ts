@@ -1,3 +1,5 @@
+import { IUser } from "../models/user.model";
+
 class ApiResponse{
     
     statusCode: number;
@@ -7,7 +9,7 @@ class ApiResponse{
     
     constructor(
         statusCode:number,
-        data:object | string | null,
+        data:object | string | null | IUser ,
         message="Success"
     ){
         this.statusCode = statusCode;

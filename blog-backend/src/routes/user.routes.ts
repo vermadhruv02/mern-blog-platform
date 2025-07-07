@@ -3,6 +3,7 @@ import { upload } from '../middlewares/multer.middleware';
 import { verifyJWT } from '../middlewares/auth.middleware';
 import { registerUser, 
     loginUser, 
+    GoogleLoginUser,
     logoutUser, 
     refreshAccessToken, 
     changePassword, 
@@ -29,6 +30,7 @@ router.post("/register",
     registerUser);
 
 router.post("/login", loginUser);
+router.post("/google-login", GoogleLoginUser);
 router.post("/logout", verifyJWT, logoutUser);
 router.post("/refreshToken", refreshAccessToken);
 router.post("/changePassword", verifyJWT, changePassword);
