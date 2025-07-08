@@ -1,12 +1,14 @@
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
 import GoogleSignin from '@/components/GoogleSignin'
-
+import { useDispatch } from 'react-redux'
+import { setUser } from '@/store/userSlice'
+import { showToast } from '@/helper/ShowToast'
 axios.defaults.withCredentials = true;
 
 const loginSchema = z.object({
@@ -15,6 +17,7 @@ const loginSchema = z.object({
 });
 
 const Login = () => {
+
   const {
     register,
     handleSubmit,
@@ -26,18 +29,28 @@ const Login = () => {
       password: '',
     },
   });
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
       const response = await axios.post('/api/v1/user/login', {
         email: data.email,
         password: data.password,
       });
-      console.log('Login successful:', response);
+      const responseData = response.data;
+      const user = responseData.data.user;
+      if (responseData.status !== 'success') {
+      // console.log('Login successful:', user);
+        showToast('success', 'Login successful');
+        dispatch(setUser(user));
+        navigate('/'); 
+      }
     } catch (error) {
+      showToast('Login failed', 'error');
       console.error('Login failed:', error);
     }
   };
+  
 
   return (
     <div className="bg-white dark:bg-zinc-900 shadow-md p-6 rounded-2xl w-full max-w-md transition-colors">
@@ -45,7 +58,7 @@ const Login = () => {
       <div className=''>
         <GoogleSignin/>
         <div className='border my-5  flex justify-center items-center'>
-          <span className='absolute bg-white p-1'>
+          <span className='absolute bg-white dark:bg-zinc-900 p-1'>
             OR
           </span>
         </div>

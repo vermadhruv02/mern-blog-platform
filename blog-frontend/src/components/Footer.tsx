@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="w-full bg-gradient-to-t from-gray-100 via-white to-white dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 shadow-inner rounded-2xl p-8 mt-10 text-center text-gray-600 dark:text-gray-300 text-sm">
+    <footer className="w-full bg-gradient-to-t from-gray-100 via-white to-white dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 shadow-inner  p-8 mt-10 text-center text-gray-600 dark:text-gray-300 text-sm">
       <div className="flex flex-col md:flex-row md:justify-between items-center max-w-5xl mx-auto gap-4">
         {/* Logo and copyright */}
         <div className="flex flex-col items-center md:items-start">

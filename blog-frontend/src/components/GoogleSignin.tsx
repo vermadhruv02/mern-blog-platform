@@ -4,9 +4,11 @@ import { signInWithPopup} from 'firebase/auth'
 import { auth , googleProvider } from "@/helper/firebase"
 import { showToast } from '@/helper/ShowToast';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/store/userSlice';
 
 const GoogleSignin = () => {
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
     const handleLogin = async () =>{
         const googleResponse = await signInWithPopup(auth, googleProvider);
@@ -29,16 +31,18 @@ const GoogleSignin = () => {
           })
             .then(async (res) => {
               const responseData = await res.json();
-              // console.log('Response:', responseData);
+              const user = responseData.data.user;
+              console.log('User data:', user);
+              console.log('Response:', responseData);
         
-              if (res.status === 201) {
-                showToast('Registration successful', 'success');
-                navigate('/'); 
-                
-                console.log('Registration successful:', responseData);
+              if (res.status === 200) {
+                showToast('Login successful', 'success');
+                navigate('/');
+                dispatch(setUser(user));
+                // console.log('Login successful:', responseData);
               } else {
-                console.error('Registration failed:', responseData);
-                showToast(responseData.message || 'Registration failed', 'error');
+                console.error('Login failed:', responseData);
+                showToast(responseData.message || 'Login failed', 'error');
               }
             })
             .catch((error) => {

@@ -39,31 +39,46 @@ const handleReadMore = () => {
   return blogCards;
 };
 
-
 const Home = () => {
   return (
     <>
-    <div className="min-h-screen   px-4 py-8 flex flex-col items-center">
-      {/* Hero Section */}
-      <section className="w-full  text-center mb-12 mt-4">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-4">
-          Welcome to <span className="text-blue-600 dark:text-blue-400">MyBlog</span>
-        </h1>
-        <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-6">
-          Discover, share, and explore insightful articles on technology, design, and more.
-        </p>
-        <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
-          Get Started
-        </button>
-      </section>
-      {/* Blog Cards List (vertical, centered) */}
-      <section className="w-full lg:grid lg:grid-cols-2  gap-8 items-center">
-        {renderBlogCards()}
-      </section>
-    </div>
+      {/* Hero Section with background image */}
+     <section className="relative  sm:h-96 w-full  overflow-hidden">
+  {/* Darkened background image */}
+  <div
+    className="absolute inset-0 bg-cover bg-center"
+    style={{
+      backgroundImage:
+        "url('https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80')",
+      filter: "brightness(0.9)", // only darkens the image
+    }}
+  />
+
+  {/* Content on top of the image */}
+  <div className="relative z-10 h-full flex flex-col justify-end items-center px-4 py-8 text-center text-white">
+    <h1 className="text-4xl md:text-5xl font-extrabold mb-2">
+      Welcome to <span className="text-blue-400">MyBlog</span>
+    </h1>
+    <p className="text-lg md:text-xl text-gray-200 mb-4">
+      Discover, share, and explore insightful articles on technology, design, and more.
+    </p>
+    <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+      Get Started
+    </button>
+  </div>
+</section>
+
+
+      {/* Blog Cards List */}
+      <div className="min-h-screen px-4 py-8 flex flex-col items-center">
+        <section className="w-full lg:grid lg:grid-cols-2 gap-8 items-center">
+          {renderBlogCards()}
+        </section>
+      </div>
     </>
   );
-}
+};
+
 
 export default Home
 

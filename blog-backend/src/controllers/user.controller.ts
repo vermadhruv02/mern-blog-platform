@@ -1,6 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError";
-import { User } from "../models/user.model";
+import { IUser, User } from "../models/user.model";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
@@ -106,7 +106,7 @@ const loginUser = asyncHandler(async (req, res)=> {
 
 const GoogleLoginUser = asyncHandler(async (req, res)=> {
   console.log("Google login user called!!!");
-  console.log(req.body)
+  // console.log(req.body)
   const { fullName, username, email, avatar} = req.body;
 
   if(!username && !email) throw new ApiError(400, "Username or Email is required");
@@ -117,9 +117,9 @@ const GoogleLoginUser = asyncHandler(async (req, res)=> {
   
   if(!user) {
     const password = Math.round(Math.random())
-    user = await User.create({fullName, username, email,password}) 
+    user = await User.create({fullName, username, email,password, avatar}) 
+    // console.log("if new is created", user);
   }
-  // console.log( "user validated");
   
   const { accessToken, refreshToken } = await   generateAccessTokenAndRefreshToken(user._id as mongoose.Types.ObjectId);
   // console.log(`token generated ${accessToken}`);

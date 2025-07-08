@@ -6,16 +6,14 @@ import OtherLayout from "./layout/OtherLayout"
 import Register from "./pages/Register"
 import CreatePost from "./pages/CreateBlog"
 // import Profile from "./pages/Profile"
-// import { ThemeProvider } from "./components/ThemeProvider"
 function App() {
   
   return (
     <>
     <Router>
       <Routes>
-          {/* <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme"> */}
-        <Route path="/" element={<MainLayout />}> 
-          <Route  index element={<Home/>} />
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
           {/* <Route  path="/profile" element={<Profile/>} /> */}
           <Route  path="/about" element={<h1>About Page</h1>} />
           <Route  path="/contact" element={<h1>Contact Page</h1>} />
@@ -38,7 +36,6 @@ function App() {
           <Route  path="/register" element={<Register/>} />
         </Route>
       
-      {/* </ThemeProvider> */}
       </Routes>
     </Router>
 

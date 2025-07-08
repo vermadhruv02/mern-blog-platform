@@ -39,7 +39,8 @@ const formSchema = z
     path: ['confirmPassword'],
   })
 
-function RegisterForm() {
+const RegisterForm = () => {
+  // const dispatch = useDispatch();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,10 +73,12 @@ const navigate = useNavigate();
       // console.log('Response:', responseData);
 
       if (res.status === 201) {
+        
+        // dispatch(setUser({}))
         showToast('Registration successful', 'success');
         navigate('/'); 
         
-        console.log('Registration successful:', responseData);
+        // console.log('Registration successful:', responseData);
       } else {
         console.error('Registration failed:', responseData);
         showToast(responseData.message || 'Registration failed', 'error');
@@ -149,13 +152,12 @@ const navigate = useNavigate();
 //   }
 
   return (
-    <div className="min-h-screen w-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-900 px-4 transition-colors">
-      <div className="bg-white dark:bg-zinc-900 shadow-md p-6 rounded-2xl w-full max-w-xl transition-colors">
+    <div className="bg-white dark:bg-zinc-900 shadow-md p-6 rounded-2xl w-full max-w-md transition-colors">
         <h2 className="text-2xl font-bold mb-4 text-center text-zinc-900 dark:text-zinc-100">Register</h2>
         <div className=''>
           <GoogleSignin/>
           <div className='border my-5  flex justify-center items-center'>
-            <span className='absolute bg-white p-1'>
+            <span className='absolute bg-white dark:bg-black p-1'>
               OR
             </span>
           </div>
@@ -258,7 +260,6 @@ const navigate = useNavigate();
           </p>
           <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:underline mt-">Login</Link>
         </div>
-      </div>
     </div>
 
   )
